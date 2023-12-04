@@ -3,6 +3,7 @@ import { SystemRoleService } from './system-role.service';
 import { CreateSystemRoleDto } from './dto/create-system-role.dto';
 import { UpdateSystemRoleDto } from './dto/update-system-role.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SkipJwt } from '@/decorator/jwt-allowlist.decorator';
 
 @ApiTags('系统角色')
 @Controller('system-role')
@@ -10,6 +11,7 @@ export class SystemRoleController {
   constructor(private readonly systemRoleService: SystemRoleService) {}
 
   @ApiOperation({ summary: '创建系统角色' })
+  @SkipJwt()
   @Post('create')
   create(@Body() createSystemRoleDto: CreateSystemRoleDto) {
     return this.systemRoleService.create(createSystemRoleDto);
@@ -29,16 +31,22 @@ export class SystemRoleController {
     return this.systemRoleService.findAll();
   }
 
+  @ApiOperation({ summary: '根据 id 获取系统角色' })
+  @SkipJwt()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.systemRoleService.findOne(+id);
   }
 
+  @ApiOperation({ summary: '根据 id 更新系统角色' })
   @Patch(':id')
+  @SkipJwt()
   update(@Param('id') id: string, @Body() updateSystemRoleDto: UpdateSystemRoleDto) {
     return this.systemRoleService.update(+id, updateSystemRoleDto);
   }
 
+  @ApiOperation({ summary: '根据 id 删除系统角色' })
+  @SkipJwt()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.systemRoleService.remove(+id);

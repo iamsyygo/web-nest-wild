@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
 import { Payload } from './types';
 import { SystemRoleService } from '../system-role/system-role.service';
+// import { randomUUID } from 'crypto'; // 生成随机字符串
 
 @Injectable()
 export class SystemUserService {
@@ -52,7 +53,7 @@ export class SystemUserService {
     const token = this.signToken({
       sub: u.id,
       username: u.username,
-      roles: u.roles,
+      roles: u.roles.map((item) => item.id),
     });
     return {
       user: u,

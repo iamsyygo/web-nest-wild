@@ -1,5 +1,6 @@
+import { SystemMenu } from '@/main/system-menu/entities/system-menu.entity';
 import { SystemPermission } from '@/main/system-permission/entities/system-permission.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class SystemRole {
@@ -40,4 +41,10 @@ export class SystemRole {
     name: 'role_permission_relation',
   })
   permissions: SystemPermission[];
+
+  @ManyToMany(() => SystemMenu, (SystemMenu) => SystemMenu, {
+    // onDelete: 'CASCADE', // 级联删除
+    // createForeignKeyConstraints: true, // 取消外键约束
+  })
+  menu: SystemMenu[];
 }

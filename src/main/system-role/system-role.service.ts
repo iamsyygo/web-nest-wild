@@ -35,14 +35,26 @@ export class SystemRoleService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} systemRole`;
+    return this.roleRepository.findOne({
+      where: { id },
+      relations: ['permissions', 'menus'],
+    });
   }
 
-  update(id: number, updateSystemRoleDto: UpdateSystemRoleDto) {
+  update(id: number, dto: UpdateSystemRoleDto) {
+    const data = this.roleRepository.findOne({
+      where: { id },
+    });
+
+    if (!data) return '角色不存在';
+
     return `This action updates a #${id} systemRole`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} systemRole`;
+  async remove(id: number) {
+    const result = await this.roleRepository.delete(id);
+
+    if (result.affected === 0) return '角色不存在';
+    return true;
   }
 }

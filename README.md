@@ -66,3 +66,7 @@ Nest is [MIT licensed](LICENSE).
 - `@nestjs/throttler` 限流
 - `class-validator`、`class-transformer`、`class-sanitizer` 类型验证、转换、清理
 - `bcryptjs` 加密
+
+## TIP
+
+`nest-cli.json` 中 `assets` 配置的路径是相对 `sourceRoot` 的路径，而不是相对项目根目录的路径

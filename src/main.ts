@@ -4,9 +4,17 @@ import { getNetworkInterfaces } from './util/os';
 import { log } from './util';
 import { initSwagger } from './config/swagger';
 import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+
 async function bootstrap() {
   const now = +new Date();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  console.log(join(__dirname, 'static'));
+
+  // app.useStaticAssets('static',);
+  app.useStaticAssets(join(__dirname, 'static'), { prefix: '/pages' });
+
   const configService = app.get(ConfigService);
   const port = configService.get('port', '9000');
   const prefix = configService.get('prefix', 'api');

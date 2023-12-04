@@ -37,4 +37,9 @@ interface yamlConfig {
   bcrypt: {
     salt: number;
   };
+
+  redis: {
+    host: string;
+    port: number;
+  };
 }

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>二维码-确认登录</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        #app {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .container {
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .tip {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+        .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+        }
+        .name {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .action {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+        .confirm {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .confirm .btn {
+            width: 100px;
+            height: 40px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .confirm .btn-primary {
+            background-color: #409eff;
+            border: 1px solid #409eff;
+        }
+        .confirm .btn-default {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            color: #333;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="tip">当前账号正在尝试使用二维码登录，请确认信息及登录行为是否为本人操作</div>
+        <div class="info">
+          <div class="avatar">
+            <img src="https://avatars.githubusercontent.com/u/1198631?s=460&u=1f2b0b2b5b2b2b2b2b2b2b2b2b2b2b2b2b2b2b&v=4" />
+          </div>
+          <div class="name">张三</div>
+          <div class="action">正在尝试登录</div>
+
+            <div class="confirm">
+                <button class="btn btn-primary">授权登录</button>
+                <button class="btn btn-default">取消</button>
+            </div>
+      </div>
+    </div>
+    <script>
+        const ok = document.querySelector('.btn-primary')
+        const cancel = document.querySelector('.btn-default')
+        const params = new URLSearchParams(window.location.search)
+        const uuid = params.get('uuid')
+        const host = location.host
+
+    
+
+        const handle = (params,fn) => {
+            fetch(`http://${host}/api/authentication/qrcode/status-change`,{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id:uuid,
+                    status:params
+                })
+            })
+                .then(res => res.json())
+                .then(fn)
+        }
+
+        ok.addEventListener('click', () => {
+                handle('scan-confirm',res => {
+                    if(res) {
+                        // 关闭
+                        window.close()
+                    }
+                })
+        })
+
+        cancel.addEventListener('click', () => {
+            handle('scan-cancel',res => {
+                if(res) {
+                    // 关闭
+                    window.close()
+                }
+            })
+        })
+
+        handle('scan-wait-confirm')
+       
+    </script>
+  </body>
+</html>

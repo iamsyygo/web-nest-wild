@@ -30,7 +30,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       this.logger.error(`${exception.name}: ${message}`);
     } else {
       const e = exception as Error;
-      message = e.message || '服务器错误';
+      console.log(e.stack);
+      message = e.stack || '服务器错误';
       this.logger.error(`${e.name}: ${e.message}`);
     }
 

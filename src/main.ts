@@ -25,7 +25,7 @@ async function bootstrap() {
   await app.listen(port);
   const { en1, lo0 } = getNetworkInterfaces();
 
-  log('blue', `\n🚀 服务已启动, 耗时: ${+new Date() - now}ms`);
+  log('blue', `\n 🚀 服务已启动, 耗时: ${+new Date() - now}ms`);
   log('blue', `📚 接口文档: http://${en1 || lo0}:${port}/docs\n`);
   lo0 && log('green', `✔︎  http://${lo0}:${port}`);
   en1 && log('green', `✔︎  http://${en1}:${port}\n`);

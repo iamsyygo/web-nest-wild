@@ -1,11 +1,50 @@
 # 指定docker-compose.yml的版本
-version: '3'
+# 查看当前docker-compose版本：docker-compose version
+version: '3.8'
+
+# 定义服务：比做一个容器，可以有多个服务
 services:
-  web:
-    image: nginx:latest
+  mysql:
+    # 指定镜像
+    image: mysql:8.0.32
+    # 指定容器名称，命名规范[a-zA-Z0-9][a-zA-Z0-9_.-]
+    container_name: squirrel-mysql
+    # 指定端口映射
     ports:
-      - '80:80'
-  db:
-    image: mysql:latest
+      - 3306:3306
+    # 指定环境变量
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: wild-dev
+    # 指定挂载目录，可以是相对路径，也可以是绝对路径
+    volumes:
+      - /Volumes/aoe/cache/Docker/mysql/conf:/etc/mysql/conf.d # 挂载配置文件
+      - /Volumes/aoe/cache/Docker/mysql/data:/var/lib/mysql # 挂载数据文件
+      - /Volumes/aoe/cache/Docker/mysql/logs:/var/log/mysql # 挂载日志文件
+    # 指定重启策略，always表示容器退出时总是重启，no表示容器退出时不重启，on-failure表示容器故障退出（返回值非0）时重启
+    restart: on-failure
+    # 指定网络模式，bridge表示桥接网络，host表示主机网络，none表示无网络，container表示共享另一个容器的网络
+    networks:
+      - squirrel-network
+
+  nest:
+    build: # 根据 Dockerfile 构建镜像
+      context: .
+      dockerfile: Dockerfile
+    container_name: squirrel-nest
+    ports:
+      - 9800:9800
+    volumes:
+      - ./:/var/serviceroot/nest-squirrel
+    depends_on: # 依赖 mysql 服务(名称根据上面的服务名称来)
+      - mysql
+    restart: on-failure # 设置自动重启，这一步必须设置，主要是存在 mysql 还没有启动完成就启动 node 服务
+
+    # 定义网络
+    networks:
+      - squirrel-network
+
+# 定义网络
+networks:
+  squirrel-network:
+    driver: bridge
